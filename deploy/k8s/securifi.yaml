@@ -1,0 +1,48 @@
+# Minimal Kubernetes deployment. Provide the database URL via the `securifi-db` secret:
+#   kubectl create secret generic securifi-db --from-literal=url=postgresql://user:pass@host:5432/securifi
+# Terminate TLS at your ingress / load balancer.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: securifi
+  labels: {app: securifi}
+spec:
+  replicas: 2
+  selector:
+    matchLabels: {app: securifi}
+  template:
+    metadata:
+      labels: {app: securifi}
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+      containers:
+        - name: securifi
+          image: securifi:0.1.0
+          args: ["serve"]
+          ports: [{containerPort: 8000, name: http}]
+          env:
+            - name: SECURIFI_ENVIRONMENT
+              value: production
+            - name: SECURIFI_DATABASE_URL
+              valueFrom: {secretKeyRef: {name: securifi-db, key: url}}
+          readinessProbe: {httpGet: {path: /readyz, port: http}, periodSeconds: 10}
+          livenessProbe: {httpGet: {path: /healthz, port: http}, periodSeconds: 20}
+          resources:
+            requests: {cpu: 250m, memory: 256Mi}
+            limits: {memory: 1Gi}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: ["ALL"]}
+          volumeMounts: [{name: tmp, mountPath: /tmp}]
+      volumes: [{name: tmp, emptyDir: {}}]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: securifi
+spec:
+  selector: {app: securifi}
+  ports: [{port: 80, targetPort: http, name: http}]

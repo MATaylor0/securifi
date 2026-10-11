@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Securifi</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231d4ed8'/%3E%3Cpath d='M9 20c0 2.5 3 4 7 4s7-1.5 7-4.2c0-6-13-3.6-13-9 0-2.4 2.6-3.8 6-3.8 3.2 0 5.6 1.2 6 3.4' stroke='white' stroke-width='2.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+</head>
+<body>
+  <div id="app">
+    <section id="login" class="login hidden">
+      <div class="login-card">
+        <div class="brand"><span class="logo">S</span><span>Securifi</span></div>
+        <p class="muted">Trust management for commercial real estate debt</p>
+        <form id="login-form">
+          <label>API key<input id="login-key" type="password" autocomplete="off" placeholder="sfk_..." required></label>
+          <button class="primary" type="submit">Sign in</button>
+          <p id="login-error" class="error"></p>
+        </form>
+        <p class="hint">Create the first key with <code>securifi admin bootstrap --email you@example.com</code></p>
+      </div>
+    </section>
+
+    <div id="shell" class="shell hidden">
+      <aside class="sidebar">
+        <div class="brand"><span class="logo">S</span><span>Securifi</span></div>
+        <div id="org" class="org"></div>
+        <nav id="nav">
+          <a href="#/facilities" data-nav="facilities">Facilities</a>
+          <a href="#/console" data-nav="console">Operations console</a>
+          <a href="#/audit" data-nav="audit">Audit log</a>
+          <a href="#/admin" data-nav="admin">Users &amp; keys</a>
+        </nav>
+        <div class="whoami">
+          <div id="who-label"></div>
+          <div id="who-role" class="muted"></div>
+          <button id="logout" class="link">Sign out</button>
+        </div>
+      </aside>
+      <main id="main" class="main"></main>
+    </div>
+  </div>
+
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <header><h2 id="modal-title"></h2><button id="modal-close" class="icon" aria-label="Close">&times;</button></header>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+  <div id="toast" class="toast hidden"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
